@@ -1,0 +1,230 @@
+//
+//  SYPersonalCenterViewController.m
+//  MicroShop
+//
+//  Created by siyue on 15/5/12.
+//  Copyright (c) 2015年 App. All rights reserved.
+//
+
+#import "SYPersonalCenterViewController.h"
+#import "CHLayout.h"
+#import "SYUserInfoModel.h"
+#import "SYGeneralHtmlViewController.h"
+#import "UIViewController+Share.h"
+#import "SYLoginViewController.h"
+#import "SYEditUserInfoViewController.h"
+#import "SYAnalyzeInterface.h"
+#import "SYShippingAddressViewController.h"
+
+@interface SYPersonalCenterViewController ()
+@property (weak, nonatomic) IBOutlet UIImageView *userImageView;
+@property (weak, nonatomic) IBOutlet UILabel *userNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *acountLabel;
+
+- (IBAction)editClick:(id)sender;
+- (IBAction)messageClick:(id)sender;
+- (IBAction)withSortClick:(id)sender;
+- (IBAction)addressClick:(id)sender;
+- (IBAction)helpClick:(id)sender;
+- (IBAction)settingClick:(id)sender;
+- (IBAction)logOutClick:(id)sender;
+
+
+
+@property(strong,nonatomic)SYUserInfoModel *userInfoModel;
+
+//URL
+@property(strong,nonatomic)NSString *messageURL;
+@property(strong,nonatomic)NSString *withSortURL;
+@property(strong,nonatomic)NSString *addressURL;
+@property(strong,nonatomic)NSString *help_indexURL;
+
+@end
+
+@implementation SYPersonalCenterViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    self.navigationItem.title =@"我的账户";
+    self.userInfoModel = [[SYUserInfoModel alloc] init];
+    
+    [self initView];
+    
+    [self requestUserInfo];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)initView
+{
+    CHLayout *layout = [CHLayout sharedManager];
+    [layout setView:self.userImageView withCornerRadius:3];
+}
+
+#pragma mark - net
+
+- (void)requestUserInfo
+{
+    NSString *key = [NSString stringWithFormat:@"&authcode=%@",UserToken];
+    NSString *app = [NSString stringWithFormat:@"&app=%@",@"ios"];
+    NSString *url = [NSString stringWithFormat:@"%@%@%@%@",HomeURL,User_Info_URL,key,app];
+    
+    [[NetworkInterface shareInstance] requestForGet:url complete:^(NSDictionary *result) {
+        [self didRequestUserInfo:result];
+        
+    } error:^(NSError *error) {
+
+    }];
+}
+
+- (void)didRequestUserInfo:(NSDictionary *)result {
+    if ([result[@"code"] integerValue]==1) {
+        NSDictionary *data = result[@"data"];
+        self.userInfoModel.imgURL = [NSString stringWithFormat:@"%@",data[@"avatar"]];
+        self.userInfoModel.userName = [NSString stringWithFormat:@"%@",data[@"nickname"]];
+        self.userInfoModel.acount = [NSString stringWithFormat:@"%@",data[@"username"]];
+        
+        NSDictionary *href = data[@"href"];
+        self.messageURL = [NSString stringWithFormat:@"%@",href[@"message"]];
+        self.withSortURL = [NSString stringWithFormat:@"%@",href[@"withSort"]];
+        self.addressURL = [NSString stringWithFormat:@"%@",href[@"address"]];
+        self.help_indexURL = [NSString stringWithFormat:@"%@",href[@"help_index"]];
+        
+        [self.userImageView sd_setImageWithURL:[NSURL URLWithString:self.userInfoModel.imgURL] placeholderImage:nil];
+        self.userNameLabel.text = self.userInfoModel.userName;
+        self.acountLabel.text = self.userInfoModel.acount;
+    }
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+- (IBAction)editClick:(id)sender {//编辑
+    SYEditUserInfoViewController *personalCenterVC = [[SYEditUserInfoViewController alloc] init];
+    [self.navigationController pushViewController:personalCenterVC animated:YES];
+    [personalCenterVC setDidEditImg:^(UIImage *image) {
+        self.userImageView.image = image;
+        if (self.didEditImg!=nil) {
+            self.didEditImg(image);
+        }
+    }];
+}
+
+- (IBAction)messageClick:(id)sender {//消息中心
+    if (self.messageURL!=nil) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Html" bundle:nil];
+        SYGeneralHtmlViewController *generalHtmlVC = [storyboard instantiateViewControllerWithIdentifier:@"generalHtmlVC"];
+        NSString *url = self.messageURL;
+        generalHtmlVC.url = url;
+        generalHtmlVC.navTitle = @"消息中心";
+        generalHtmlVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:generalHtmlVC animated:YES];
+    }
+}
+//#pragma mark --提现账户
+- (IBAction)withSortClick:(id)sender {//提现账户
+    if (self.withSortURL!=nil) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Html" bundle:nil];
+        SYGeneralHtmlViewController *generalHtmlVC = [storyboard instantiateViewControllerWithIdentifier:@"generalHtmlVC"];
+        NSString *url = self.withSortURL;
+        generalHtmlVC.url = url;
+        generalHtmlVC.navTitle = @"提现账户";
+        generalHtmlVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:generalHtmlVC animated:YES];
+    }
+
+}
+#pragma mark --收货地址
+- (IBAction)addressClick:(id)sender {
+    if (self.addressURL!=nil) {
+//        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Html" bundle:nil];
+//        SYGeneralHtmlViewController *generalHtmlVC = [storyboard instantiateViewControllerWithIdentifier:@"generalHtmlVC"];
+//        NSString *url = self.addressURL;
+//        generalHtmlVC.url = url;
+//        generalHtmlVC.navTitle = @"收货地址";
+//        generalHtmlVC.hidesBottomBarWhenPushed = YES;
+//        [self.navigationController pushViewController:generalHtmlVC animated:YES];
+        
+         
+        //SYShippingAddressViewController *nextVC = [[SYShippingAddressViewController alloc] init];
+        //nextVC.url = self.addressURL;
+        
+        
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MyAddress" bundle:nil];
+        SYShippingAddressViewController *shippingAddressViewController = [storyboard instantiateViewControllerWithIdentifier:@"ShippingAddressViewController"];
+        [self.navigationController pushViewController:shippingAddressViewController animated:YES];
+
+    }
+
+}
+
+- (IBAction)helpClick:(id)sender {
+    if (self.help_indexURL!=nil) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Html" bundle:nil];
+        SYGeneralHtmlViewController *generalHtmlVC = [storyboard instantiateViewControllerWithIdentifier:@"generalHtmlVC"];
+        NSString *url = self.help_indexURL;
+        generalHtmlVC.url = url;
+        generalHtmlVC.navTitle = @"新手帮助";
+        generalHtmlVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:generalHtmlVC animated:YES];
+    }
+}
+
+- (IBAction)settingClick:(id)sender {
+    /*SYEditUserInfoViewController *personalCenterVC = [[SYEditUserInfoViewController alloc] init];
+    [self.navigationController pushViewController:personalCenterVC animated:YES];*/
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Member" bundle:nil];
+    GoodsViewController *generalHtmlVC = [storyboard instantiateViewControllerWithIdentifier:@"feedback"];
+    generalHtmlVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:generalHtmlVC animated:YES];
+}
+
+- (IBAction)logOutClick:(id)sender {
+    isLogout = YES;
+    self.isLoginVC = YES;
+    RemoveUserToken;
+    [self shareCancelAuthWithType:ShareTypeWeixiTimeline];
+    SYLoginViewController *loginVC = [[SYLoginViewController alloc] initWithNibName:@"SYLoginViewController" bundle:nil];
+    loginVC.fatherNavigationController = self.navigationController;
+    loginVC.view.frame = self.view.frame;
+    loginVC.isLoginVC = YES;
+    loginVC.fatherViewController = self;
+    
+    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+    
+    loginVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:loginVC animated:NO];
+    
+    /*[self.view.window addSubview:loginVC.view];
+    
+    
+    CGRect frame = loginVC.view.frame;
+    frame.size.width = ScreenWidth;
+    loginVC.view.frame = frame;
+    
+    
+    self.navigationController.navigationBar.hidden = YES;
+    [self addChildViewController:loginVC];
+    loginVC.didLogin = ^(){
+        
+    };*/
+
+}
+
+@end

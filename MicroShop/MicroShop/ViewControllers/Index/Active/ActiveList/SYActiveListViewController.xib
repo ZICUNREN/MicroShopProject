@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SYActiveListViewController">
+            <connections>
+                <outlet property="hintLabel" destination="iVk-pW-5Is" id="wXY-9T-gK2"/>
+                <outlet property="tableView" destination="ePK-Oc-Mpk" id="b8I-1v-dWY"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ePK-Oc-Mpk">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </tableView>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="暂时没有活动" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iVk-pW-5Is">
+                    <rect key="frame" x="0.0" y="290" width="600" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="e3c-hm-cab"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="iVk-pW-5Is" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="8vS-rl-uQK"/>
+                <constraint firstAttribute="centerY" secondItem="iVk-pW-5Is" secondAttribute="centerY" id="BMZ-Dd-PRC"/>
+                <constraint firstItem="ePK-Oc-Mpk" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="IBg-4a-Jg1"/>
+                <constraint firstItem="ePK-Oc-Mpk" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="SU1-4l-7ru"/>
+                <constraint firstAttribute="trailing" secondItem="ePK-Oc-Mpk" secondAttribute="trailing" id="hbR-BK-Rnc"/>
+                <constraint firstAttribute="trailing" secondItem="iVk-pW-5Is" secondAttribute="trailing" id="qml-m1-lKf"/>
+                <constraint firstAttribute="bottom" secondItem="ePK-Oc-Mpk" secondAttribute="bottom" id="vlu-zZ-LsH"/>
+            </constraints>
+        </view>
+    </objects>
+</document>
